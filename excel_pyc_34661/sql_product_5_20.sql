@@ -1,63 +1,102 @@
-INSERT INTO sync_offline_invent_summary_rp(PARENT_SHOP_ID,
-                                                  PARENT_SHOP_CODE,
-                                                  PARENT_SHOP_NAME,
-                                                  SHOP_ID,
-                                                  SHOP_CODE,
-                                                  SHOP_NAME,
-                                                  SHOP_PATH,
-                                                  STAFF_CODE,
-                                                  STAFF_NAME,
-                                                  INVENTORY_TYPE,
-                                                  INVENTORY_CODE,
-                                                  INVENTORY_NAME,
-                                                  STATUS,
-                                                  UNIT_NAME,
-                                                  CHANNEL_TYPE_ID,
-                                                  AMOUNT,
-                                                  QUANTITY_INFERIOR,
-                                                  ACTIVE,
-                                                  CREATE_DATE,
-                                                  SYNC_DATE)
-
-
-    (select parent_shop_id,
-            parent_shop_code,
-            parent_shop_name,
-            shop_id,
-            (case
-                 when staff_code is null then CONCAT(shop_code, ' - ', shop_name)
-                 else concat(concat(shop_code, '-', shop_name), ' | ', concat(staff_code, '-', staff_name))
-                end)                                                                        as shop_code,
-            shop_name,
-            (select shop_path from bccs3_inventory_la.shop s where s.shop_id = roi.shop_id) as shop_path,
-            staff_code,
-            staff_name,
-            pro_offer_type_name,
-            product_offer_code,
-            product_offer_name,
-            state_id,
-            unit_name,
-            channel_type_id,
-            quantity                                                                        as amount,
-            nvl(quantity_inferior, 0)                                                       as quantity_inferior,
-            CASE status
-                WHEN 1 THEN 'Active'
-                WHEN 0 THEN 'Inactive'
-                END                                                                         as status,
-            created_datetime,
-            now()                                                                              sync_date
-     from bccs3_report_la.rp_offline_inventory roi
-     where roi.created_datetime = LAST_DAY(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
-     order by parent_shop_code,
-              shop_code,
-              pro_offer_type_name,
-              product_offer_code);
-
-
-
-
-
-
-
-
-
+INSERT INTO sync_offline_invent_summary_rp
+(PARENT_SHOP_ID,
+ PARENT_SHOP_CODE,
+ PARENT_SHOP_NAME,
+ SHOP_ID,
+ SHOP_CODE,
+ SHOP_NAME,
+ SHOP_PATH,
+ STAFF_CODE,
+ STAFF_NAME,
+ PROD_OFFER_TYPE_NAME,
+ PRODUCT_OFFER_CODE,
+ PRODUCT_OFFER_NAME,
+ STATE_ID,
+ STATE_NAME,
+ UNIT_NAME,
+ CHANNEL_TYPE_ID,
+ QUANTITY,
+ QUANTITY_INFERIOR,
+ STATUS,
+ STATUS_NAME,
+ CREATE_DATE,
+ SYNC_DATE,
+ PERIOD_REPORT)
+select PARENT_SHOP_ID,
+       PARENT_SHOP_CODE,
+       PARENT_SHOP_NAME,
+       SHOP_ID,
+       SHOP_CODE,
+       SHOP_NAME,
+       SHOP_PATH,
+       STAFF_CODE,
+       STAFF_NAME,
+       PROD_OFFER_TYPE_NAME,
+       PRODUCT_OFFER_CODE,
+       PRODUCT_OFFER_NAME,
+       STATE_ID,
+       STATE_NAME,
+       UNIT_NAME,
+       CHANNEL_TYPE_ID,
+       QUANTITY,
+       QUANTITY_INFERIOR,
+       STATUS,
+       STATUS_NAME,
+       CREATED_DATETIME,
+       SYNC_DATE,
+       str_to_date(:period_report, '%Y%m%d') PERIOD_REPORT
+from (select parent_shop_id,
+             parent_shop_code,
+             parent_shop_name,
+             shop_id,
+             shop_code                                                                       as shop_code,
+             shop_name,
+             (select shop_path from bccs3_inventory_la.shop s where s.shop_id = roi.shop_id) as shop_path,
+             staff_code,
+             staff_name,
+             pro_offer_type_name                                                                prod_offer_type_name,
+             product_offer_code,
+             product_offer_name,
+             state_id,
+             (select osv.name
+              from bccs3_inventory_la.option_set os,
+                   bccs3_inventory_la.option_set_value osv
+              where os.code = 'GOODS_STATE'
+                and os.id = osv.option_set_id
+                and osv.VALUE = cast(state_id as CHAR)
+                and osv.status = 1
+                and os.status = 1)                                                              state_name,
+             unit_name,
+             channel_type_id,
+             quantity                                                                        as quantity,
+             nvl(quantity_inferior, 0)                                                       as quantity_inferior,
+             status,
+             CASE status
+                 WHEN 1 THEN 'Active'
+                 WHEN 0 THEN 'Inactive'
+                 END                                                                         as status_name,
+             created_datetime,
+             now()                                                                              sync_date
+      from bccs3_report_la.rp_offline_inventory roi
+      where roi.created_datetime = LAST_DAY(DATE_SUB(CURRENT_DATE(), interval 1 month))) t
+group by PARENT_SHOP_ID,
+         PARENT_SHOP_CODE,
+         PARENT_SHOP_NAME,
+         SHOP_ID,
+         SHOP_CODE,
+         SHOP_NAME,
+         SHOP_PATH,
+         STAFF_CODE,
+         STAFF_NAME,
+         PROD_OFFER_TYPE_NAME,
+         PRODUCT_OFFER_CODE,
+         PRODUCT_OFFER_NAME,
+         STATE_ID,
+         STATE_NAME,
+         UNIT_NAME,
+         CHANNEL_TYPE_ID,
+         QUANTITY,
+         QUANTITY_INFERIOR,
+         STATUS,
+         STATUS_NAME,
+         CREATED_DATETIME
