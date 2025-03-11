@@ -70,7 +70,7 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                               0                          as reduce_other
                        from bccs3_sale_trans_la.debit_remain dr
                        where dr.debit_remain_date =
-                             DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                             DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                        union all
                        select dt.shop_id     as shop_id_debt,
                               dt.staff_id    as staff_id_debt,
@@ -93,9 +93,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '1'
                          and dt.status = 1
                          and dt.revenue_type in ('1', '3')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -119,9 +119,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '1'
                          and dt.status = 1
                          and dt.revenue_type in ('2')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -145,9 +145,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '1'
                          and dt.status = 1
                          and dt.revenue_type not in ('1', '2', '3', '5', '6', '7')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -171,9 +171,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '1'
                          and dt.status = 1
                          and dt.revenue_type in ('5')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -197,9 +197,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '1'
                          and dt.status = 1
                          and dt.revenue_type in ('7')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -223,9 +223,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '2'
                          and dt.status = 1
                          and dt.REDUCE_TYPE in ('2')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -249,9 +249,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '2'
                          and dt.status = 1
                          and dt.REDUCE_TYPE in ('8')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select br.shop_id     as shop_id_debt,
@@ -273,8 +273,8 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                               0              as reduce_other
                        from bccs3_sale_trans_la.bank_receipt br
                        where br.receipt_status = 1
-                         and br.org_bank_date >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
-                         and br.org_bank_date < DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                         and br.org_bank_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+                         and br.org_bank_date < DATE_FORMAT(:date, '%Y%m%d')
                        group by br.shop_id, br.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -298,9 +298,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '2'
                          and dt.status = 1
                          and dt.REDUCE_TYPE in ('4')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dt.shop_id     as shop_id_debt,
@@ -324,9 +324,9 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        where dt.debit_type = '2'
                          and dt.status = 1
                          and dt.REDUCE_TYPE not in ('1', '2', '3', '4', '8')
-                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
+                         and dt.DEBIT_TRANS_DATE >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
                          and dt.DEBIT_TRANS_DATE <
-                             DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                             DATE_FORMAT(:date, '%Y%m%d')
                        group by dt.shop_id, dt.staff_id
                        union all
                        select dpt.shop_id     as shop_id_debt,
@@ -349,8 +349,8 @@ INSERT INTO bccs3_inventory_la.sync_debit_staff_rp(PARENT_SHOP_NAME, PARENT_SHOP
                        from bccs3_sale_trans_la.debit_pending_transaction dpt
                        where dpt.status = 1
                          and dpt.revenue_type = 1
-                         and dpt.created_date >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
-                         and dpt.created_date < DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+                         and dpt.created_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+                         and dpt.created_date < DATE_FORMAT(:date, '%Y%m%d')
                        group by dpt.shop_id, dpt.staff_id) a
                  group by a.staff_id_debt, a.shop_id_debt) b,
                 bccs3_catalog_la.staff s,

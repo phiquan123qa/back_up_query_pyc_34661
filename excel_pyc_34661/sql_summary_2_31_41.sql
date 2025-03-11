@@ -47,7 +47,6 @@ INSERT INTO sync_revenue_diff_rp
                   COALESCE(Revenue_Of_Sale_Pending_4_1, 0) AS Revenue_Of_Sale_Pending_4_1,
                   COALESCE(Revenue_Of_Sale_Report_3_1, 0) -
                   COALESCE(Revenue_Of_Sale_Report_4_1, 0)  AS DIFFERENCE_REVENUE_REPORT_3_1_WITH_4_1,
-                  COALESCE(Revenue_Of_Sale_Report_3_1, 0) -
                   COALESCE(Revenue_Of_Sale_Pending_4_1, 0) AS DIFFERENCE_REVENUE_REPORT_Pending_3_1_WITH_4_1
            FROM (select srs.SHOP_ID,
                         srs.SHOP_CODE,
@@ -58,6 +57,7 @@ INSERT INTO sync_revenue_diff_rp
                         srs.STAFF_CODE,
                         SUM(srs.AMOUNT_TAX)                                                Revenue_Of_Sale_Report_3_1
                  FROM bccs3_inventory_la.sync_revenue_staff_rp srs
+                 WHERE srs.PERIOD_REPORT = str_to_date(:date, '%Y%m%d')
                  GROUP BY srs.SHOP_CODE, srs.SHOP_NAME, srs.SHOP_CODE, srs.STAFF_NAME, srs.STAFF_CODE) rp_31
                     LEFT JOIN
                 (SELECT dsr.shop_id,
@@ -72,5 +72,6 @@ INSERT INTO sync_revenue_diff_rp
                         dsr.PARENT_SHOP_NAME,
                         dsr.PARENT_SHOP_CODE_GROUP
                  FROM bccs3_inventory_la.sync_debit_staff_rp dsr
+                 WHERE dsr.PERIOD_REPORT = str_to_date(:date, '%Y%m%d')
                  GROUP BY dsr.SHOP_CODE, dsr.SHOP_NAME, SHOP_STAFF, dsr.STAFF_CODE) rp_41
                 on rp_31.SHOP_CODE = rp_41.SHOP_CODE and rp_31.STAFF_CODE = rp_41.STAFF_CODE) drd)

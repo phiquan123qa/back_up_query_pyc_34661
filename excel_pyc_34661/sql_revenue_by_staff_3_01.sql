@@ -96,8 +96,8 @@ from ((select a.staff_code,
               a.shop_path                                                                      shop_path
        from bccs3_report_la.rp_daily_revenue a
        where 1 = 1
-         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
-         and a.sale_trans_date < DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+         and a.sale_trans_date < DATE_FORMAT(:date, '%Y%m%d')
          and ((sale_trans_type != 13
            and a.amount <> 0)
            or (sale_trans_type != 4
@@ -178,8 +178,8 @@ from ((select a.staff_code,
               a.shop_path                                          shop_path
        from bccs3_report_la.rp_daily_revenue a
        where sale_trans_type = 13
-         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
-         and a.sale_trans_date < DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+         and a.sale_trans_date < DATE_FORMAT(:date, '%Y%m%d')
          and ((a.sale_trans_status = 3
            and a.sale_trans_type <> 2)
            or a.sale_trans_status = 5
@@ -254,8 +254,8 @@ from ((select a.staff_code,
        from bccs3_report_la.rp_daily_revenue a
        where a.sale_trans_type = 4
          and a.amount = 0
-         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), '%Y%m%d')
-         and a.sale_trans_date < DATE_FORMAT(CURRENT_DATE(), '%Y%m%d')
+         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+         and a.sale_trans_date < DATE_FORMAT(:date, '%Y%m%d')
          and ((a.sale_trans_status = 3
            and a.sale_trans_type <> 2)
            or a.sale_trans_status = 5
