@@ -96,8 +96,14 @@ from ((select a.staff_code,
               a.shop_path                                                                      shop_path
        from bccs3_report_la.rp_daily_revenue a
        where 1 = 1
+         and a.sale_trans_date >= DATE_FORMAT(:date, '%Y%m%d')
+         and a.sale_trans_date < DATE_FORMAT(DATE_ADD(:date, INTERVAL 1 DAY), '%Y%m%d')
          and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
          and a.sale_trans_date < DATE_FORMAT(:date, '%Y%m%d')
+         and (a.PRICE = -1 or a.price != 0 or a.accounting_price != 0
+           or (a.price = 0 and a.accounting_price = 0)
+           or (a.sale_services_price = 0 and a.accounting_price = 0))
+         and a.SALE_TRANS_STATUS in (2, 3, 5)
          and ((sale_trans_type != 13
            and a.amount <> 0)
            or (sale_trans_type != 4
@@ -164,8 +170,7 @@ from ((select a.staff_code,
               SUM(a.accounting_quantity)                           accounting_quantity,
               a.amount                                          as price,
               a.amount                                          as accounting_price,
-              nvl(a.vat,
-                  10)                                           as vat,
+              nvl(a.vat, 10)                                    as vat,
               SUM(a.amount)                                     as amount,
               0                                                 as discount_amount,
               SUM(a.vat_amount)                                 as vat_amount,
@@ -178,8 +183,12 @@ from ((select a.staff_code,
               a.shop_path                                          shop_path
        from bccs3_report_la.rp_daily_revenue a
        where sale_trans_type = 13
-         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
-         and a.sale_trans_date < DATE_FORMAT(:date, '%Y%m%d')
+         and a.sale_trans_date >= DATE_FORMAT(:date, '%Y%m%d')
+         and a.sale_trans_date < DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+         and (a.PRICE = -1 or a.price != 0 or a.accounting_price != 0
+           or (a.price = 0 and a.accounting_price = 0)
+           or (a.sale_services_price = 0 and a.accounting_price = 0))
+         and a.SALE_TRANS_STATUS in (2, 3, 5)
          and ((a.sale_trans_status = 3
            and a.sale_trans_type <> 2)
            or a.sale_trans_status = 5
@@ -254,8 +263,12 @@ from ((select a.staff_code,
        from bccs3_report_la.rp_daily_revenue a
        where a.sale_trans_type = 4
          and a.amount = 0
-         and a.sale_trans_date >= DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
-         and a.sale_trans_date < DATE_FORMAT(:date, '%Y%m%d')
+         and a.sale_trans_date >= DATE_FORMAT(:date, '%Y%m%d')
+         and a.sale_trans_date < DATE_FORMAT(DATE_SUB(:date, INTERVAL 1 DAY), '%Y%m%d')
+         and (a.PRICE = -1 or a.price != 0 or a.accounting_price != 0
+           or (a.price = 0 and a.accounting_price = 0)
+           or (a.sale_services_price = 0 and a.accounting_price = 0))
+         and a.SALE_TRANS_STATUS in (2, 3, 5)
          and ((a.sale_trans_status = 3
            and a.sale_trans_type <> 2)
            or a.sale_trans_status = 5
@@ -282,8 +295,7 @@ from ((select a.staff_code,
                 a.display_model_name,
                 a.price,
                 a.accounting_price,
-                nvl(a.vat,
-                    10),
+                nvl(a.vat, 10),
                 a.sale_services_id,
                 a.accounting_name,
                 a.shop_code_lv2,
